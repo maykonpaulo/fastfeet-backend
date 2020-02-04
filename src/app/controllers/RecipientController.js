@@ -12,7 +12,7 @@ class RecipientController {
   }
 
   async update(req, res) {
-    const recipient = await Recipient.create(req.body);
+    const recipient = await Recipient.update(req.body);
 
     return res.json(recipient);
   }
