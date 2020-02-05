@@ -8,10 +8,11 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 
 // ROTAS PÚBLICAS
-routes.get('/', RecipientController.index);
 routes.post('/sessions', SessionController.store);
 
+routes.use(authMiddleware);
+
 // ROTAS PRIVADAS
-routes.use(authMiddleware)
+routes.get('/recipients', RecipientController.index);
 
 export default routes;

@@ -10,7 +10,7 @@ module.exports = {
           address_complement: 'Santa Maria',
           address_state: 'DF',
           address_city: 'Brasília',
-          address_zipcode: '72510-406',
+          address_zipcode: '72510406',
           created_at: new Date(),
           updated_at: new Date(),
         },
