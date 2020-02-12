@@ -16,6 +16,8 @@ class Recipient extends Model {
         sequelize: connection,
       }
     );
+
+    return this;
   }
 }
 
