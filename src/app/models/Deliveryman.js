@@ -6,6 +6,7 @@ class Deliveryman extends Sequelize.Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
+        active: Sequelize.BOOLEAN,
       },
       {
         sequelize: connection,

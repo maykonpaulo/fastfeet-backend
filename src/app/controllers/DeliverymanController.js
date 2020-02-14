@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import Deliveryman from '../models';
+import { Deliveryman } from '../models';
 
 class DeliverymanController {
   async index(req, res) {
@@ -72,31 +72,11 @@ class DeliverymanController {
   }
 
   async delete(req, res) {
-    const validation = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      avatar_id: Yup.number(),
-    });
+    const deliveryman = await Deliveryman.findByPk(req.params.id);
 
-    if (!(await validation.isValid(req.body))) {
-      return res.status(401).json({ error: 'Validation fails' });
-    }
+    deliveryman.active = false;
 
-    const { email } = req.body;
-
-    const tempDeliveryman = await Deliveryman.findByPk(req.params.id);
-
-    if (email && email !== tempDeliveryman.email) {
-      const existsEmail = await Deliveryman.findOne({ where: { email } });
-
-      if (existsEmail) {
-        return res
-          .status(401)
-          .json({ error: 'E-mail already exists in database' });
-      }
-    }
-
-    const deliveryman = await Deliveryman.update(req.body);
+    await deliveryman.save();
 
     return res.json(deliveryman);
   }
