@@ -15,6 +15,10 @@ class Deliveryman extends Sequelize.Model {
       }
     );
 
+    this.addHook('beforeCreate', deliveryman => {
+      deliveryman.active = true;
+    })
+
     return this;
   }
 

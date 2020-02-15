@@ -1,4 +1,5 @@
 import { Sequelize, Model } from 'sequelize';
+import format from '../../config/format';
 
 class Recipient extends Model {
   static init(connection) {
@@ -16,6 +17,10 @@ class Recipient extends Model {
         sequelize: connection,
       }
     );
+
+    this.addHook('afterFind', recipient => {
+      recipient.address_zipcode = format.cep(delivery.recipient.address_zipcode);
+    });
 
     return this;
   }
