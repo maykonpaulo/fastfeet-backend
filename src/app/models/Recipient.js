@@ -19,7 +19,7 @@ class Recipient extends Model {
     );
 
     this.addHook('afterFind', recipient => {
-      recipient.address_zipcode = format.cep(delivery.recipient.address_zipcode);
+      recipient.address_zipcode = format.zipcode(delivery.recipient.address_zipcode);
     });
 
     return this;

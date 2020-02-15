@@ -1,5 +1,5 @@
 class Format {
-  cep(value) {
+  zipcode(value) {
     return `${value.substring(0, 5)}-${value.substring(5, 8)}`;
   }
 }

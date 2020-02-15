@@ -18,7 +18,7 @@ class Delivery extends Sequelize.Model {
     );
 
     this.addHook('afterFind', delivery => {
-      delivery.recipient && (delivery.recipient.address_zipcode = format.cep(delivery.recipient.address_zipcode));
+      delivery.recipient && (delivery.recipient.address_zipcode = format.zipcode(delivery.recipient.address_zipcode));
     })
 
     return this;
