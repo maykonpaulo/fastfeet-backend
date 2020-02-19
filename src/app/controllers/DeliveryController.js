@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 
-import { Delivery, Deliveryman, Recipient } from '../models';
+import { Delivery, Deliveryman, Recipient, DeliveryProblem } from '../models';
 import Mail from '../../lib/Mail';
 
 class DeliveryController {
@@ -92,13 +92,23 @@ class DeliveryController {
   }
 
   async delete(req, res) {
-    const delivery = await Delivery.findByPk(req.params.id);
+    const { id, deliveryproblem_id } = req.params;
 
-    delivery.canceled_at = new Date();
+    try {
+      const delivery = id ? await Delivery.findByPk(id) : (await DeliveryProblem.findOne({
+        where: { id: deliveryproblem_id },
+        include: [{ model: Delivery, as: 'delivery' }]
+      })).delivery;
 
-    await delivery.save();
+      delivery.canceled_at = new Date();
 
-    return res.json(delivery);
+      await delivery.save();
+
+      return res.json(delivery);
+    }
+    catch (error) {
+      return res.status(400).json({ error });
+    }
   }
 }
 
