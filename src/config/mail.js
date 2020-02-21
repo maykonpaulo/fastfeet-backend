@@ -8,5 +8,5 @@ export default {
   },
   default: {
     from: 'Fastfeet <noreply@fastfeet.com.br>',
-  }
+  },
 };

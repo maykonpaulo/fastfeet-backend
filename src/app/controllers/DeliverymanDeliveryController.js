@@ -1,4 +1,4 @@
-import { Delivery } from "../models";
+import { Delivery } from '../models';
 
 class DeliverymanDeliveryController {
   async update(req, res) {

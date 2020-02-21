@@ -1,4 +1,4 @@
-import { DeliveryProblem } from "../models";
+import { DeliveryProblem } from '../models';
 
 class DeliveriesProblemsController {
   async index(req, res) {

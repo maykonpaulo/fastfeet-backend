@@ -1,11 +1,11 @@
-import { DeliveryProblem } from "../models";
+import { DeliveryProblem } from '../models';
 
 class DeliveryProblemsController {
   async index(req, res) {
     const { delivery_id } = req.params;
 
     const problems = await DeliveryProblem.findAll({
-      where: { delivery_id }
+      where: { delivery_id },
     });
 
     return res.json(problems);
@@ -18,8 +18,8 @@ class DeliveryProblemsController {
 
     const problem = await DeliveryProblem.create({
       delivery_id,
-      description
-    })
+      description,
+    });
 
     return res.json(problem);
   }

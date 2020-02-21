@@ -18,16 +18,29 @@ class Delivery extends Sequelize.Model {
     );
 
     this.addHook('afterFind', delivery => {
-      delivery.recipient && (delivery.recipient.address_zipcode = format.zipcode(delivery.recipient.address_zipcode));
-    })
+      const zipcode = delivery.recipient.address_zipcode;
+
+      if (delivery.recipient) {
+        delivery.recipient.address_zipcode = format.zipcode(zipcode);
+      }
+    });
 
     return this;
   }
 
   static associate(models) {
-    this.belongsTo(models.Recipient, { foreignKey: 'recipient_id', as: 'recipient' });
-    this.belongsTo(models.Deliveryman, { foreignKey: 'deliveryman_id', as: 'deliveryman' });
-    this.belongsTo(models.File, { foreignKey: 'signature_id', as: 'signature' });
+    this.belongsTo(models.Recipient, {
+      foreignKey: 'recipient_id',
+      as: 'recipient',
+    });
+    this.belongsTo(models.Deliveryman, {
+      foreignKey: 'deliveryman_id',
+      as: 'deliveryman',
+    });
+    this.belongsTo(models.File, {
+      foreignKey: 'signature_id',
+      as: 'signature',
+    });
   }
 }
 

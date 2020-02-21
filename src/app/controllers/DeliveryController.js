@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
-import { format, parseISO } from 'date-fns';
-import pt from 'date-fns/locale/pt-BR';
+import { parseISO } from 'date-fns';
 
 import { Delivery, Deliveryman, Recipient, DeliveryProblem } from '../models';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import { NewDelivery, CancelDelivery } from '../jobs';
 
 class DeliveryController {
   async index(req, res) {
@@ -29,32 +29,10 @@ class DeliveryController {
       include: [
         { model: Recipient, as: 'recipient' },
         { model: Deliveryman, as: 'deliveryman' },
-      ]
+      ],
     });
 
-    Mail.sendEmail({
-      to: `${delivery.deliveryman.name} <${delivery.deliveryman.email}>`,
-      subject: 'Nova encomenda para retirada',
-      template: 'newdelivery',
-      context: {
-        deliveryman: delivery.deliveryman.name,
-        recipient: {
-          name: delivery.recipient.name,
-          address_street: delivery.recipient.address_street,
-          address_number: delivery.recipient.address_number,
-          address_complement: delivery.recipient.address_complement,
-          address_state: delivery.recipient.address_state,
-          address_city: delivery.recipient.address_city,
-          address_zipcode: delivery.recipient.address_zipcode,
-        },
-        product: delivery.product,
-        date: format(
-          delivery.start_date,
-          "dd'/'MM'/'yyyy' às 'h:mm",
-          { locale: pt, }
-        ),
-      }
-    });
+    await Queue.add(NewDelivery.key, { delivery });
 
     return res.json(delivery);
   }
@@ -95,18 +73,25 @@ class DeliveryController {
     const { id, deliveryproblem_id } = req.params;
 
     try {
-      const delivery = id ? await Delivery.findByPk(id) : (await DeliveryProblem.findOne({
-        where: { id: deliveryproblem_id },
-        include: [{ model: Delivery, as: 'delivery' }]
-      })).delivery;
+      let delivery;
+
+      if (id) {
+        delivery = await Delivery.findByPk(id);
+      } else {
+        delivery = await DeliveryProblem.findOne({
+          where: { id: deliveryproblem_id },
+          include: [{ model: Delivery, as: 'delivery' }],
+        });
+      }
 
       delivery.canceled_at = new Date();
 
       await delivery.save();
 
+      await Queue.add(CancelDelivery.key, { delivery });
+
       return res.json(delivery);
-    }
-    catch (error) {
+    } catch (error) {
       return res.status(400).json({ error });
     }
   }

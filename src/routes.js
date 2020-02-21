@@ -22,11 +22,17 @@ const upload = multer(multerConfig);
 // ROTAS PÚBLICAS
 routes.post('/sessions', SessionController.store);
 
-routes.put('/deliveryman-delivery/:delivery_id', DeliverymanDeliveryController.update);
+routes.put(
+  '/deliveryman-delivery/:delivery_id',
+  DeliverymanDeliveryController.update
+);
 
 routes.get('/delivery/:delivery_id/problems', DeliveryProblemsController.store);
 
-routes.delete('/problem/:deliveryproblem_id/cancel-delivery', DeliveryController.delete);
+routes.delete(
+  '/problem/:deliveryproblem_id/cancel-delivery',
+  DeliveryController.delete
+);
 
 routes.use(authMiddleware);
 
@@ -50,10 +56,8 @@ routes.post('/deliveries', DeliveryController.store);
 routes.put('/deliveries/:id', DeliveryController.update);
 routes.delete('/deliveries/:id', DeliveryController.delete);
 
-
 routes.get('/deliveries/problems', DeliveriesProblemsController.index);
 
 routes.get('/delivery/:delivery_id/problems', DeliveryProblemsController.index);
-
 
 export default routes;
