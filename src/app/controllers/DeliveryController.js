@@ -73,16 +73,14 @@ class DeliveryController {
     const { id, deliveryproblem_id } = req.params;
 
     try {
-      let delivery;
-
-      if (id) {
-        delivery = await Delivery.findByPk(id);
-      } else {
-        delivery = await DeliveryProblem.findOne({
-          where: { id: deliveryproblem_id },
-          include: [{ model: Delivery, as: 'delivery' }],
-        });
-      }
+      const delivery = id
+        ? await Delivery.findByPk(id)
+        : (
+            await DeliveryProblem.findOne({
+              where: { id: deliveryproblem_id },
+              include: [{ model: Delivery, as: 'delivery' }],
+            })
+          ).delivery;
 
       delivery.canceled_at = new Date();
 
